@@ -1,0 +1,235 @@
+CREATE DATABASE Summer_Camp;
+USE Summer_Camp;
+
+CREATE TABLE address(
+        ID INT NOT NULL AUTO_INCREMENT,
+		address1 varchar(255),
+		address2 varchar(255),
+		address3 varchar(255), 
+		city varchar(255),
+		state varchar(2), 
+		zipcode varchar(10),
+		PRIMARY KEY (ID)
+);
+
+CREATE TABLE organization(
+		 ID int NOT NULL AUTO_INCREMENT,
+		 organizationName varchar(255), 
+		 organizationAddress int,
+		 organizationPhone varchar(12), 
+		 e-mail varchar(255), 
+		 FOREIGN KEY organizationAddress REFERENCES address(ID),
+		 PRIMARY KEY (ID)
+		 
+);
+
+CREATE TABLE camp(
+         ID int NOT NULL AUTO_INCREMENT,
+		 CampName varchar(255),
+		 CampSlogan varchar(255),
+		 organizationID int,
+		 campAddress int,
+		 e-mail varchar(255),
+		 CampPinCode MEDIUMINT(4) UNSIGNED ZEROFILL NOT NULL,
+		 FOREIGN KEY organizationID REFERENCES organization(ID),
+		 FOREIGN KEY campAddress REFERENCES address(ID), 
+		 PRIMARY KEY (ID)
+);
+
+ALTER TABLE camp AUTO_INCREMENT= 1000;
+
+CREATE TABLE session(
+        ID int NOT NULL AUTO_INCREMENT, 
+		campID int NOT NULL,
+		startDate DATE NOT NULL,
+		PRIMARY KEY (ID),
+		FOREIGN KEY (campID) REFERENCES camp(ID)
+
+);
+
+CREATE TABLE cabin(
+       ID int NOT NULL AUTO_INCREMENT,
+	   CabinName varchar(255), 
+	   campSessionID int NOT NULL,
+	   PRIMARY KEY(ID),
+	   FOREIGN KEY(campSessionID) REFERENCES session(ID)
+
+);
+
+CREATE TABLE camper(
+       ID int NOT NULL AUTO_INCREMENT,
+	   firstName varchar(255) NOT NULL,
+	   lastName varchar(255),
+	   gender varchar(1),
+	   dateOfBirth DATE,
+	   disordersOther varchar(255),
+	   medications varchar(255),
+	   specialNeeds varchar(255),
+	   dietaryPreferencesOther varchar(255),
+	   specialRequests varchar(255),
+	   allergiesOther varchar(255),
+	   campID INT NOT NULL,
+	   PRIMARY KEY (ID),
+	   FOREIGN KEY (campID) REFERENCES camp(ID)
+	   
+);
+
+ALTER TABLE camper AUTO_INCREMENT= 100;
+
+CREATE TABLE counselor(
+	   ID int NOT NULL AUTO_INCREMENT,
+	   firstName varchar(255),
+	   lastName varchar(255),
+	   address INT,
+	   FOREIGN KEY (address) REFERENCES address(ID),
+	   FOREIGN KEY(campID) REFERENCES camp(ID),
+	   PRIMARY KEY(ID)
+	   
+	   
+);
+
+ALTER TABLE  counselor AUTO_INCREMENT= 900;
+
+CREATE TABLE camperSessionLink(
+	  camperID INT,
+	  sessionID INT,
+	  FOREIGN KEY (camperID) REFERENCES camper(ID),
+	  FOREIGN KEY (sessionID) REFERENCES session(ID),
+	  PRIMARY KEY (camperID, sessionID)
+);
+
+
+
+CREATE TABLE camperCabin(
+		camperID INT,
+		cabinID INT,
+	    FOREIGN KEY (camperID) REFERENCES camper(ID),
+		FOREIGN KEY (cabinID) REFERENCES cabin(ID),
+	    PRIMARY KEY (camperID, cabinID)
+);
+
+CREATE TABLE counselorSessionLink(
+		counselorID INT, 
+		sessionID INT, 
+		FOREIGN KEY (counselorID) REFERENCES counselor(ID),
+		FOREIGN KEY (sessionID) REFERENCES session(ID),
+		PRIMARY KEY (counselorID, sessionID)
+);
+
+CREATE TABLE counselorCabin(
+		counselorID INT, 
+		cabinID INT, 
+		FOREIGN KEY (counselorID) REFERENCES counselor(ID), 
+		FOREIGN KEY (cabinID) REFERENCES cabin(ID),
+		PRIMARY KEY (counselorID, cabinID)
+);
+
+CREATE TABLE parent(
+         ID INT NOT NULL AUTO_INCREMENT,
+		 firstName varchar(255) NOT NULL,
+		 lastName varchar(255) NOT NULL,
+		 addressID INT,
+		 phone varchar(12) NOT NULL,
+		 e-mail varchar(255),
+		 relationship varchar(255),
+		 PRIMARY KEY (ID)
+);
+
+
+
+
+CREATE TABLE parentCamperLink(
+	   parentID INT,
+	   camperID INT, 
+	   FOREIGN KEY (parentID) REFERENCES parent(ID), 
+	   FOREIGN KEY (camperID) REFERENCES camper(ID),
+	   PRIMARY KEY (parentID, camperID)
+);
+
+CREATE TABLE disorders(
+       ID INT NOT NULL AUTO_INCREMENT,
+	   name varchar(255) NOT NULL,
+	   PRIMARY KEY (ID)
+);
+
+CREATE TABLE camperDisorderLink(
+        camperID INT,
+		disorderID INT,
+		FOREIGN KEY (camperID) REFERENCES camper(ID),
+	    FOREIGN KEY (disorderID) REFERENCES disorders(ID),
+		PRIMARY KEY (camperID, disorderID)
+);
+
+
+
+CREATE TABLE incidentType(
+        ID INT NOT NULL AUTO_INCREMENT,
+		name varchar(10),
+		PRIMARY KEY(ID)
+);
+INSERT INTO incidentType VALUES
+      (1, Medical),
+      (2, Behavioral), 
+      (3, Accidental),
+	  (4, Other);
+	  
+CREATE TABLE actionTaken(
+	   ID INT NOT NULL AUTO_INCREMENT,
+	   type varchar(30),
+	   PRIMARY KEY(ID)
+	   
+);
+
+INSERT INTO actionTaken VALUES
+     (1, Warning/Consultation),
+	 (2, Loss of Activity),
+	 (3, Parent Notification), 
+	 (4, Dismissal from Camp), 
+	 (5, Medecine Given), 
+	 (6, Ice Pack), 
+	 (7, Bandaged), 
+	 (8, 911 Call),
+	 (9, Rest), 
+	 (10, Other);
+	 
+	  
+
+CREATE TABLE incident(
+        ID INT NOT NULL AUTO_INCREMENT,
+		campID INT,
+		type INT,
+		
+		notes varchar(500),
+		FOREIGN KEY(campID) REFERENCES camp(ID),
+		FOREIGN KEY(type) REFERENCES incidentType(ID),
+		PRIMARY KEY (ID)
+		
+);
+
+
+
+CREATE TABLE camperIncidentLink(
+        camperID INT,
+		incidentID INT,
+		FOREIGN KEY (camperID) REFERENCES camp(ID),
+		FOREIGN KEY (incidentID) REFERENCES incident(ID),
+		PRIMARY KEY (camperID, incidentID)
+		
+);
+
+CREATE TABLE counselorIncidentLink(
+		counselorID INT, 
+		incidentID INT, 
+		FOREIGN KEY (counselorID) REFERENCES counselor(ID),
+		FOREIGN KEY (incidentID) REFERENCES incident(ID),
+		PRIMARY KEY (counselorID, incidentID)
+
+);
+
+CREATE TABLE incidentActions(
+	    incidentID INT, 
+		actionTakenID INT,
+		FOREIGN KEY (incidentID) incident(ID), 
+		FOREIGN KEY (actionTakenID) actionTaken(ID), 
+		PRIMARY KEY (incidentID, actionTakenID);
+);
