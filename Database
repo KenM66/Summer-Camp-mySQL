@@ -15,10 +15,10 @@ CREATE TABLE address(
 CREATE TABLE organization(
 		 ID INT NOT NULL AUTO_INCREMENT,
 		 organizationName varchar(255), 
-		 organizationAddress int,
+		 organizationAddress INT,
 		 organizationPhone varchar(12), 
-		 e-mail varchar(255), 
-		 FOREIGN KEY organizationAddress REFERENCES address(ID),
+		 email varchar(255), 
+		 FOREIGN KEY (organizationAddress) REFERENCES address(ID),
 		 PRIMARY KEY (ID)
 		 
 );
@@ -31,10 +31,10 @@ CREATE TABLE camp(
 		 CampSlogan varchar(255),
 		 organizationID INT,
 		 campAddress INT,
-		 e-mail varchar(255),
+		 email varchar(255),
 		 CampPinCode MEDIUMINT(4) UNSIGNED ZEROFILL NOT NULL,
-		 FOREIGN KEY organizationID REFERENCES organization(ID),
-		 FOREIGN KEY campAddress REFERENCES address(ID), 
+		 FOREIGN KEY (organizationID) REFERENCES organization(ID),
+		 FOREIGN KEY (campAddress) REFERENCES address(ID), 
 		 PRIMARY KEY (ID)
 );
 
@@ -92,22 +92,22 @@ CREATE TABLE staffType(
 );
 
 INSERT INTO staffType VALUES
-		(1, campDirector), 
-		(2, campAssistantDirector), 
-		(3, nurse), 
-		(4, registrar), 
-		(5, clinicStaffMember), 
-		(6, staffSupervisor), 
-		(7, maintenance), 
-		(8, leadershipStaff), 
-		(9, administrator), 
-		(10, foodServicesWorker), 
-		(11, cabinCounselor), 
-		(12, programLeader),
-		(13, humanResourcesManager),
-		(14, humanResourcesRepresentative),
-		(15, president),
-		(16, Other);
+		(1, 'Camp Director'), 
+		(2, 'Camp Assistant Director'), 
+		(3, 'Nurse'), 
+		(4, 'Registrar'), 
+		(5, 'Clinic Staff Member'), 
+		(6, 'Staff Supervisor'), 
+		(7, 'Maintenance'), 
+		(8, 'Leadership Staff'), 
+		(9, 'Administrator'), 
+		(10, 'Food Services Worker'), 
+		(11, 'Cabin Counselor'), 
+		(12, 'Program Leader'),
+		(13, 'Human Resources Manager'),
+		(14, 'Human Resources Representative'),
+		(15, 'President'),
+		(16, 'Other');
 		
 
 CREATE TABLE staff(
@@ -117,8 +117,9 @@ CREATE TABLE staff(
 	   dateOfBirth DATE,
 	   socialSecurityNumber INT(9),
 	   address INT,
-	   e-mail varchar(255),
+	   email varchar(255),
 	   phone INT (12),
+	   medications varchar(255),
 	   FOREIGN KEY (address) REFERENCES address(ID),
 	   PRIMARY KEY(ID)
 	   
@@ -132,9 +133,9 @@ CREATE TABLE staffTypeOrganizationLink(
 	   staffID INT, 
 	   organizationID INT, 
 	   staffTypeID INT, 
-	   FOREIGN KEY staffID REFERENCES staff(ID),
-	   FOREIGN KEY organizationID REFERENCES organization(ID), 
-	   FOREIGN KEY staffTypeID REFERENCES staffType(ID),
+	   FOREIGN KEY (staffID) REFERENCES staff(ID),
+	   FOREIGN KEY (organizationID) REFERENCES organization(ID), 
+	   FOREIGN KEY (staffTypeID) REFERENCES staffType(ID),
 	   PRIMARY KEY (staffID, organizationID, staffTypeID)
 
 );
@@ -145,7 +146,7 @@ CREATE TABLE reference(
 	   lastName varchar(255) NOT NULL,
 	   middleInitial varchar(1),
 	   phone INT (12),
-	   e-mail varchar(255), 
+	   email varchar(255), 
 	   relationship varchar(255),
 	   PRIMARY KEY (ID)
 	   
@@ -192,7 +193,7 @@ CREATE TABLE staffSessionLink(
 CREATE TABLE staffCabinLink(
 		staffID INT, 
 		cabinID INT, 
-		FOREIGN KEY (staffID) REFERENCES counselor(ID), 
+		FOREIGN KEY (staffID) REFERENCES staff(ID), 
 		FOREIGN KEY (cabinID) REFERENCES cabin(ID),
 		PRIMARY KEY (staffID, cabinID)
 );
@@ -203,7 +204,7 @@ CREATE TABLE parent(
 		 lastName varchar(255) NOT NULL,
 		 addressID INT,
 		 phone varchar(12) NOT NULL,
-		 e-mail varchar(255),
+		 email varchar(255),
 		 relationship varchar(255),
 		 PRIMARY KEY (ID)
 );
@@ -226,12 +227,12 @@ CREATE TABLE disorders(
 );
 
 INSERT INTO disorders VALUES
-    (1, autism),
-	(2, adhd), 
-	(3, anxiety), 
-	(4, bedwetting), 
-	(5, asthma), 
-	(6, depression);
+    (1, 'Autism'),
+	(2, 'ADHD'), 
+	(3, 'Anxiety'), 
+	(4, 'Bedwetting'), 
+	(5, 'Asthma'), 
+	(6, 'Depression');
 
 CREATE TABLE camperDisorderLink(
         camperID INT,
@@ -249,11 +250,11 @@ CREATE TABLE incidentType(
 		PRIMARY KEY(ID)
 );
 INSERT INTO incidentType VALUES
-      (1, medical),
-      (2, behavioral), 
-      (3, injury),
-	  (4, staffConduct),
-	  (5, other);
+      (1, 'Medical'),
+      (2, 'Behavioral'), 
+      (3, 'Accident/Injury'),
+	  (4, 'Staff Conduct'),
+	  (5, 'Other');
 	  
 CREATE TABLE actionTaken(
 	   ID INT NOT NULL AUTO_INCREMENT,
@@ -263,18 +264,18 @@ CREATE TABLE actionTaken(
 );
 
 INSERT INTO actionTaken VALUES
-     (1, warning),
-	 (2, lossOfActivity),
-	 (3, parentNotification), 
-	 (4, finalWarning),
-	 (5, dismissalfromCamp), 
-	 (6, medecine), 
-	 (7, ice), 
-	 (8, bandaged), 
-	 (9, 911),
-	 (10, rest), 
-	 (11, termination),
-	 (12, other);
+     (1, 'Warning'),
+	 (2, 'Loss of Activity'),
+	 (3, 'Parent Notification'), 
+	 (4, 'Final Warning'),
+	 (5, 'Dismissal'), 
+	 (6, 'Medecine Given'), 
+	 (7, 'Ice'), 
+	 (8, 'Bandaged'), 
+	 (9, '911 Call'),
+	 (10, 'Rest'), 
+	 (11, 'Termation'),
+	 (12, 'Other');
 	 
 	  
 
@@ -318,7 +319,7 @@ CREATE TABLE incidentActions(
 		actionTakenID INT,
 		FOREIGN KEY (incidentID) REFERENCES incident(ID), 
 		FOREIGN KEY (actionTakenID) REFERENCES actionTaken(ID), 
-		PRIMARY KEY (incidentID, actionTakenID);
+		PRIMARY KEY (incidentID, actionTakenID)
 );
 
 CREATE TABLE emergencyContact(
@@ -351,7 +352,7 @@ CREATE TABLE activity(
 		ID INT NOT NULL AUTO_INCREMENT,
 		name varchar(255), 
 		description varchar(255),
-		varchar(255),
+	
 		PRIMARY KEY (ID)
 );
 
@@ -373,8 +374,8 @@ CREATE TABLE activitySessionDateLink(
 CREATE TABLE activitySessionLink(
 		activityID INT,
 		activitySessionID INT,
-		FOREIGN KEY activityID REFERENCES activity(ID), 
-		FOREIGN KEY activitySessionID REFERENCES activitySession(ID),
+		FOREIGN KEY( activityID) REFERENCES activity(ID), 
+		FOREIGN KEY (activitySessionID) REFERENCES activitySession(ID),
 		PRIMARY KEY (activityID, activitySessionID)
 );
 
@@ -382,9 +383,9 @@ CREATE TABLE camperActivityAssignments(
 		activityID INT, 
 		activitySessionID INT, 
 		camperID INT, 
-		FOREIGN KEY activityID REFERENCES activity(ID),
-		FOREIGN KEY activitySessionID REFERENCES activitySession(ID),
-		FOREIGN KEY camperID REFERENCES camper(ID),
+		FOREIGN KEY (activityID) REFERENCES activity(ID),
+		FOREIGN KEY (activitySessionID) REFERENCES activitySession(ID),
+		FOREIGN KEY (camperID) REFERENCES camper(ID),
 		PRIMARY KEY (activityID, activitySessionID, camperID)
 );
 
@@ -392,24 +393,24 @@ CREATE TABLE staffActivityAssignments(
 	   activityID INT, 
 	   activitySessionID INT, 
 	   staffID INT, 
-	   FOREIGN KEY activityID REFERENCES activity(ID),
-	   FOREIGN KEY activitySessionID REFERENCES activitySession(ID),
-	   FOREIGN KEY staffID REFERENCES staff(ID),
+	   FOREIGN KEY (activityID) REFERENCES activity(ID),
+	   FOREIGN KEY (activitySessionID) REFERENCES activitySession(ID),
+	   FOREIGN KEY (staffID) REFERENCES staff(ID),
 	   PRIMARY KEY (activityID, activitySessionID, staffID)
 );
 
 CREATE TABLE camperImageLink(
 		camperID INT, 
-		imagePath varchar(1024), 
-		FOREIGN KEY camperID REFERENCES camper(ID), 
+		imagePath varchar(767), 
+		FOREIGN KEY (camperID) REFERENCES camper(ID), 
 		PRIMARY KEY (camperID, imagePath)
 
 );
 
 CREATE TABLE staffImageLink(
 		staffID INT, 
-		imagePath varchar(1024), 
-		FOREIGN KEY staffID REFERENCES staff(ID), 
+		imagePath varchar(767), 
+		FOREIGN KEY (staffID) REFERENCES staff(ID), 
 		PRIMARY KEY (staffID, imagePath)
 );
 
@@ -420,23 +421,81 @@ CREATE TABLE status(
 );
 
 INSERT INTO status VALUES 
-         (1, notArrived), 
-         (2, arrived), 
-         (3, departed),
-         (4, offSite);
+         (1, 'Not Arrived'), 
+         (2, 'Arrived'), 
+         (3, 'Departed'),
+         (4, 'N/A- Offsite Staff');
 
 CREATE TABLE camperStatusLink(
 	     camperID INT, 
 		 statusID INT, 
-		 FOREIGN KEY camperID REFERENCES camper(ID), 
-		 FOREIGN KEY statusID REFERENCES status(ID), 
+		 FOREIGN KEY (camperID) REFERENCES camper(ID), 
+		 FOREIGN KEY (statusID) REFERENCES status(ID), 
 		 PRIMARY KEY (camperID, statusID)
 );
 
 CREATE TABLE staffStatusLink(
          staffID INT, 
 		 statusID INT, 
-		 FOREIGN KEY staffID REFERENCES staff(ID), 
-		 FOREIGN KEY statusID REFERENCES status(ID), 
+		 FOREIGN KEY (staffID) REFERENCES staff(ID), 
+		 FOREIGN KEY (statusID) REFERENCES status(ID), 
 		 PRIMARY KEY (staffID, statusID)
 );
+
+CREATE TABLE dietaryPreferences(
+         ID INT NOT NULL, 
+		 preference varchar(255),
+		 PRIMARY KEY (ID)
+);
+
+INSERT INTO dietaryPreferences VALUES
+		(1, 'Vegetarian'),
+		(2, 'Vegan'), 
+		(3, 'Lactose Intolerant'), 
+		(4, 'Glueten Free'), 
+		(5, 'Other');
+
+CREATE TABLE camperDietaryPreferencesLink(
+		camperID INT, 
+		preferenceID INT, 
+		FOREIGN KEY (camperID) REFERENCES camper(ID), 
+		FOREIGN KEY (preferenceID) REFERENCES dietaryPreferences(ID),
+		PRIMARY KEY (camperID, preferenceID)
+
+);
+
+CREATE TABLE staffDietaryPreferencesLink(
+		staffID INT, 
+		preferenceID INT, 
+		FOREIGN KEY (staffID) REFERENCES staff(ID), 
+		FOREIGN KEY (preferenceID) REFERENCES dietaryPreferences(ID), 
+		PRIMARY KEY (staffID, preferenceID)
+);
+
+CREATE TABLE note(
+		ID INT NOT NULL AUTO_INCREMENT,
+		organizationID INT, 
+		note varchar(767), 
+		FOREIGN KEY (organizationID) REFERENCES organization(ID), 
+		PRIMARY KEY (ID)
+);
+
+CREATE TABLE camperNoteLink(
+	    camperID INT, 
+		noteID INT,  
+		FOREIGN KEY (camperID) REFERENCES camper(ID),
+		FOREIGN KEY (noteID) REFERENCES note(ID),
+		PRIMARY KEY (camperID, noteID)
+);
+
+CREATE TABLE staffNoteLink(
+		staffID INT, 
+		noteID INT, 
+		FOREIGN KEY (staffID) REFERENCES staff(ID), 
+		FOREIGN KEY (noteID) REFERENCES note(ID), 
+		PRIMARY KEY (staffID, noteID)
+);
+
+
+
+
